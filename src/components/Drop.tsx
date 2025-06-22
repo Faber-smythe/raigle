@@ -1,6 +1,6 @@
 // import { XCircleIcon } from '@heroicons/react/24/outline'
 import DropColourPicker from '@/components/DropColourPicker'
-import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
+import { Dialog, DialogPanel } from '@headlessui/react'
 
 import { useState, useEffect } from 'react'
 

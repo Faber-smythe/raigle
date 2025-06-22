@@ -1,4 +1,4 @@
-import { useRef, useEffect, TouchEventHandler, useState } from "react"
+import { useRef, useEffect, useState } from "react"
 
 const backgroundGradient = [
   { colour: [29, 0, 0], percentage: 0 },
