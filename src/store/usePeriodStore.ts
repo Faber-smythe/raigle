@@ -23,6 +23,7 @@ export const usePeriodStore = create<PeriodState>((set) => ({
     }),
   removeEntry: (date) =>
     set((state) => {
+      console.log("removing entry : ", date)
       const updated = state.entries.filter(e => e.date !== date);
       localStorage.setItem('periodEntries', JSON.stringify(updated));
       return { entries: updated };

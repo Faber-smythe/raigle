@@ -1,12 +1,13 @@
 
 import Calendar from 'react-calendar';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { formatDateForDisplay, formatDateForStorage, getDateFromStorageFormat } from '@/misc/Utils';
 import type { TileArgs } from 'react-calendar';
 import { useOutletContext, Link, useParams, useNavigate } from 'react-router';
 import { PeriodEntry as Entry } from '@/misc/Types';
 import { usePeriodStore } from '@/store/usePeriodStore';
 import Drop from '@/components/Drop';
+import TodayButton from '@/components/TodayButton';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -37,7 +38,6 @@ const MonthViewDay = ({ day }: WeekViewDayProp) => {
 
     setEntry(newEntry)
     updateEntryStore(newEntry) // this will either remove the entry if empty, or else save it
-
   }
 
 
@@ -59,10 +59,11 @@ const MonthViewDay = ({ day }: WeekViewDayProp) => {
 
 const MonthView = () => {
 
-  // const dataContext = useOutletContext() as Entry[]
   const dataEntries = usePeriodStore(state => state.entries);
   const navigate = useNavigate()
   const [value, setValue] = useState<Value>(new Date());
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const calendarRef = useRef<HTMLDivElement | null>(null)
 
   const { dayParam } = useParams();
 
@@ -72,10 +73,37 @@ const MonthView = () => {
       targetDay = getDateFromStorageFormat(dayParam)
       if (targetDay) {
         setValue(targetDay)
+        navigate(`/month/${formatDateForStorage(targetDay)}`)
       }
     }
+
   }, [dayParam])
 
+  const goBackToToday = () => {
+    // set active start date but it causes the month navigation to freeze
+    setStartDate(new Date())
+  }
+  const disableActiveStartDate = () => {
+    // causes month navigation to work again
+    setTimeout(() => setStartDate(undefined));
+  }
+
+  useEffect(() => {
+    const calendarElement = calendarRef.current as HTMLDivElement;
+    const navigationButtons = calendarElement.querySelectorAll('.react-calendar__navigation__arrow');
+
+    navigationButtons.forEach(button => {
+      button.addEventListener('click', disableActiveStartDate);
+    });
+
+    return () => {
+      if (calendarElement) {
+        navigationButtons.forEach(button => {
+          button.removeEventListener('click', disableActiveStartDate);
+        });
+      }
+    };
+  }, []);
 
   const handleTileContent = (tile: TileArgs) => {
     const entry = dataEntries.find(entry => entry.date == formatDateForStorage(tile.date))
@@ -104,12 +132,20 @@ const MonthView = () => {
     navigate(`/month/${formatDateForStorage(day)}`)
   }
 
+
   return (
-    <section className="h-full flex flex-col justify-between">
-      <div className=" m-2 rounded-md flex items-center justify-center">
+    <section className="h-full flex flex-col relative justify-between">
+      {true &&
+        <div className=" flex flex-col items-center justify-center absolute top-1 left-1">
+          <TodayButton callBack={goBackToToday} />
+        </div>
+      }
+      <div className=" m-2 rounded-md flex items-center justify-center pt-5">
         <Calendar
           onChange={setValue}
           value={value}
+          inputRef={calendarRef}
+          activeStartDate={startDate}
           className="rounded h-full"
           tileClassName={handleTileClasses}
           tileContent={handleTileContent}

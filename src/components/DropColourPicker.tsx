@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState } from "react"
 
 const backgroundGradient = [
-  { colour: [29, 0, 0], percentage: 0 },
+  { colour: [45, 10, 0], percentage: 0 },
   // { colour: [154, 13, 12], percentage: 30 },
   { colour: [255, 23, 21], percentage: 50 },
-  { colour: [219, 144, 144], percentage: 80 },
+  { colour: [255, 190, 190], percentage: 80 },
   { colour: [94, 68, 68], percentage: 90 },
   { colour: [212, 92, 32], percentage: 100 }
 ]

@@ -5,8 +5,7 @@ import Drop from '@/components/Drop'
 import { PeriodEntry as Entry } from "@/misc/Types"
 import { formatDateForDisplay, formatDateForStorage, isToday, getDateFromStorageFormat } from "@/misc//Utils"
 import { usePeriodStore } from "@/store/usePeriodStore"
-
-
+import TodayButton from "@/components/TodayButton"
 
 const DayView = () => {
   const updateEntryStore = useOutletContext() as Function
@@ -27,7 +26,6 @@ const DayView = () => {
       targetDay = getDateFromStorageFormat(dayParam)
       if (targetDay) {
         setDay(targetDay)
-        console.log(dataEntries)
       }
     }
     if (!dayParam || !targetDay) {
@@ -42,7 +40,6 @@ const DayView = () => {
     let entry = dataEntries.find(entry => (entry.date == formatDateForStorage(day)))
     if (!entry) entry = new Entry(formatDateForStorage(day))
     setEntry(entry)
-    console.log(entry.notes)
   }, [day])
 
 
@@ -74,7 +71,7 @@ const DayView = () => {
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (updateNoteTimeout.current) clearTimeout(updateNoteTimeout.current)
     const udpatedValue = e.target.value
-    
+
     console.log(udpatedValue)
 
     const newEntry = {
@@ -89,26 +86,34 @@ const DayView = () => {
   }
 
   return (
-    <section id="dayview-section" className="flex flex-col grow">
+    <section id="dayview-section" className="flex flex-col grow relative">
       {/* date navigation */}
-      <div className="h-1/8 border border-black flex items-center justify-center ">
+      {!isToday(day) &&
+        <div className=" flex flex-col items-center justify-center absolute top-1 left-1">
+          <TodayButton />
+
+        </div>
+      }
+      <div className="flex items-center justify-center w-full pt-5">
         <ChevronLeftIcon className="size-8 hover:cursor-pointer" onClick={goToYesterday} />
-        <p className={`text-center m-2 capitalize w-6/10  rounded-md ${isToday(day) ? "today" : ""}`} >
+        <p className={`text-center m-2 capitalize w-6/10  border-2  rounded-md ${isToday(day) ? "today" : "border-transparent"}`} >
           {formatDateForDisplay(day)}
           <br />
           {day.toLocaleString("FR-fr", { year: "numeric" })}
         </p>
         <ChevronRightIcon className="size-8 hover:cursor-pointer" onClick={goToTomorrow} />
+
+
       </div>
       {/* notes */}
-      <div className="h-3/8 border border-black p-2 text-sm">
+      <div className="h-3/8 p-2 text-sm">
         <textarea className="w-full h-full px-2 py-1 bg-gray-50 border-1 border-gray-100 outline-0 focus:border-black rounded-md" onChange={handleNoteChange} placeholder="Ajouter une note..." value={entry.notes ?? ""}>
           {/* <p className="p-1 m-1"></p> */}
         </textarea>
 
       </div>
       {/* blood */}
-      <div className="h-1/2 pb-8 border border-black flex justify-center items-center">
+      <div className="h-1/2 pb-8 flex justify-center items-center">
         <Drop handleBloodUpdate={handleBloodUpdate} blood={entry.blood} className="h-8/10 shadow-lg shadow-red-100 bg-gray-50 w-fit p-1 rounded-full" />
       </div>
     </section >

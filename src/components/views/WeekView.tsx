@@ -6,6 +6,7 @@ import { PencilSquareIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/
 import { useOutletContext, useNavigate, useParams } from 'react-router';
 import { usePeriodStore } from '@/store/usePeriodStore';
 import Drop from '@/components/Drop';
+import TodayButton from '@/components/TodayButton';
 
 interface WeekViewDayProp {
   day: Date
@@ -52,7 +53,7 @@ const WeekViewDay = ({ day }: WeekViewDayProp) => {
         {entry.notes && <PencilSquareIcon className="size-4" />}
         {entry.notes &&
           <p className="block w-10/10 italic text-xs whitespace-nowrap overflow-hidden text-ellipsis self-start">
-            {entry.notes[0]}
+            {entry.notes}
           </p>
         }
       </div>
@@ -72,12 +73,16 @@ const WeekView = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+  }, [])
+
+  useEffect(() => {
     // check for date in the url
     let targetDay
     if (dayParam) {
       targetDay = getDateFromStorageFormat(dayParam)
       if (targetDay) {
-        setWeek(getWeekfromDay(targetDay))
+        const targetWeek = getWeekfromDay(targetDay)
+        setWeek(targetWeek)
       }
     }
     if (!dayParam || !targetDay) {
@@ -106,19 +111,21 @@ const WeekView = () => {
     const lastDay = week[6].toLocaleString("FR-fr", { day: "numeric" })
     const lastDayMonth = week[6].toLocaleString("FR-fr", { month: "short" })
 
-    return <p>{firstDay} {firstDayMonth != lastDayMonth ? firstDayMonth : ""} - {lastDay} {lastDayMonth}</p>
+    return <p className="text-center m-2 capitalize w-6/10 ">{firstDay} {firstDayMonth != lastDayMonth ? firstDayMonth : ""} - {lastDay} {lastDayMonth}</p>
   }
 
   return (
+    week &&
     <section id="weekview-section" className="flex flex-col grow relative overflow-hidden">
-      <div className="flex h-1/9 justify-between items-center">
-        <p className="px-3">
-          <ChevronLeftIcon className="size-6 hover:cursor-pointer" onClick={goToWeekBefore} />
-        </p>
+      {!(week.map(date => formatDateForStorage(date)).find(date => date == formatDateForStorage(new Date()))) &&
+        <div className=" flex flex-col items-center justify-center absolute top-1 left-1">
+          <TodayButton />
+        </div>
+      }
+      <div className="flex h-1/9 justify-center items-center pt-5">
+        <ChevronLeftIcon className="size-8 hover:cursor-pointer" onClick={goToWeekBefore} />
         {week.length && <CurrentWeekLabel week={week} />}
-        <p className="px-3">
-          <ChevronRightIcon className="size-6  hover:cursor-pointer" onClick={goToComingWeek} />
-        </p>
+        <ChevronRightIcon className="size-8  hover:cursor-pointer" onClick={goToComingWeek} />
       </div>
       <div className="flex flex-col h-8/9 overflow-scroll">
         {week.map(day =>

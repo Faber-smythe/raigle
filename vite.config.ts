@@ -20,8 +20,8 @@ export default defineConfig({
       //   swDest: 'sw.js'
       // },
       manifest: {
-        name: 'Period Tracker',
-        short_name: 'Tracker',
+        name: 'Raigle - saigneur du ciel',
+        short_name: 'Raigle',
         description: 'A simple PWA for tracking menstruation cycles',
         theme_color: '#e91e63',
         background_color: '#030014',

@@ -34,7 +34,6 @@ createRoot(document.getElementById('root')!).render(
           <Route path="month" element={<MonthView />} />
         </Route>
       </Routes>
-      {/* <App /> */}
     </StrictMode>
   </BrowserRouter>
 )

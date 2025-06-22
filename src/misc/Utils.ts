@@ -23,9 +23,11 @@ export const isToday = (day: Date): boolean => {
 
 export const getWeekfromDay = (day: Date): Date[] => {
   const currentDay = new Date(day.getTime())
+  console.log("currentDay : ", currentDay)
   let week: Date[] = []
   for (let i = 1; i <= 7; i++) {
-    let first = currentDay.getDate() - currentDay.getDay() + i
+    const currentDayIndex = currentDay.getDay() == 0 ? 7 : currentDay.getDay() // sunday is index 0 /!\
+    let first = currentDay.getDate() - currentDayIndex + i
     let day = new Date(currentDay.setDate(first))
     week.push(day)
   }
