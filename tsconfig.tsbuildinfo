@@ -1,0 +1,1 @@
+{"root":["./tailwind.config.ts","./vite.config.ts","./src/app.tsx","./src/navbar.tsx","./src/startingsplash.tsx","./src/testdata.ts","./src/types.ts","./src/utils.ts","./src/main.tsx","./src/vite-env.d.ts","./src/assets/drop.tsx","./src/assets/redeagle.tsx","./src/views/dayview.tsx","./src/views/monthview.tsx","./src/views/weekview.tsx"],"errors":true,"version":"5.8.3"}
