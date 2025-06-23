@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import { useState, useEffect, useRef } from 'react';
 import { formatDateForDisplay, formatDateForStorage, getDateFromStorageFormat } from '@/misc/Utils';
 import type { TileArgs } from 'react-calendar';
-import { useOutletContext, Link, useParams, useNavigate } from 'react-router';
+import { useOutletContext, useParams, useNavigate } from 'react-router';
 import { PeriodEntry as Entry } from '@/misc/Types';
 import { usePeriodStore } from '@/store/usePeriodStore';
 import Drop from '@/components/Drop';
@@ -17,7 +17,6 @@ interface WeekViewDayProp {
 }
 
 const MonthViewDay = ({ day }: WeekViewDayProp) => {
-
   const updateEntryStore = useOutletContext() as Function
   const dataEntries = usePeriodStore(state => state.entries);
   // const dataContext = useOutletContext() as Entry[]
@@ -41,19 +40,18 @@ const MonthViewDay = ({ day }: WeekViewDayProp) => {
   }
 
 
-
   return (
 
 
-    <div className="flex justify-around align-center h-full">
-      <Link to={`/day/${formatDateForStorage(day)}`} className="text-sm flex align-center justify-center flex-col border border-gray-100 text-center bg-white rounded-md p-1 m-2 w-3/10">Voir<br /> le jour</Link>
-      <p className="text-sm text-center flex flex-col items-center justify-center">
-        <Drop handleBloodUpdate={handleBloodUpdate} className="size-10" blood={entry.blood} />
+    <div className="flex flex-col justify-around align-center grow p-1 mx-3 max-h-1/4 rounded-md bg-white">
+      <p className="text-sm text-center flex justify-center items-center relative h-8">
+        <Drop handleBloodUpdate={handleBloodUpdate} className="size-10 p-1 sm:p-.5 absolute top-1 right-1 rounded-full border  border-pink-300" blood={entry.blood} />
         {formatDateForDisplay(day)}
       </p>
-      <Link to={`/week/${formatDateForStorage(day)}`} className="text-sm flex align-center justify-center flex-col border border-gray-100 text-center bg-white rounded-md p-1 m-2 w-3/10">Voir<br /> la semaine </Link>
+      <p className="whitespace-pre-wrap text-xs text-ellipsis overflow-scroll p-1 pr-10">
+        {entry.notes}
+      </p>
     </div>
-
   )
 }
 
@@ -79,9 +77,9 @@ const MonthView = () => {
 
   }, [dayParam])
 
-  const goBackToToday = () => {
+  const goToCalendarDay = (day: Date) => {
     // set active start date but it causes the month navigation to freeze
-    setStartDate(new Date())
+    setStartDate(day)
   }
   const disableActiveStartDate = () => {
     // causes month navigation to work again
@@ -114,7 +112,6 @@ const MonthView = () => {
     }
   }
 
-
   const handleTileClasses = (tile: TileArgs) => {
     let className = ""
     if (formatDateForStorage(tile.date) == formatDateForStorage(new Date())) {
@@ -134,10 +131,10 @@ const MonthView = () => {
 
 
   return (
-    <section className="h-full flex flex-col relative justify-between">
+    <section className="h-full flex flex-col relative overflow-hidden">
       {true &&
         <div className=" flex flex-col items-center justify-center absolute top-1 left-1">
-          <TodayButton callBack={goBackToToday} />
+          <TodayButton handleDoToDay={goToCalendarDay} />
         </div>
       }
       <div className=" m-2 rounded-md flex items-center justify-center pt-5">
@@ -152,9 +149,9 @@ const MonthView = () => {
           onClickDay={handleDayClick}
         />
       </div>
-      <div className="flex h-2/10 flex-col justify-end mb-3 relative">
-        <MonthViewDay day={value as Date} />
-      </div>
+      {/* <div className="flex h-2/10 flex-col justify-end mb-3 relative"> */}
+      <MonthViewDay day={value as Date} />
+      {/* </div> */}
     </section>
   )
 

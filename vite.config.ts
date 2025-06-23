@@ -15,10 +15,6 @@ export default defineConfig({
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'sw.js',
-      // injectManifest: {
-      //   swSrc: 'sw.js',
-      //   swDest: 'sw.js'
-      // },
       manifest: {
         name: 'Raigle - saigneur du ciel',
         short_name: 'Raigle',

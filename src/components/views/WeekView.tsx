@@ -5,6 +5,7 @@ import { formatDateForDisplay, formatDateForStorage, isToday, getWeekfromDay, ch
 import { PencilSquareIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useOutletContext, useNavigate, useParams } from 'react-router';
 import { usePeriodStore } from '@/store/usePeriodStore';
+import { useSwipeable } from 'react-swipeable';
 import Drop from '@/components/Drop';
 import TodayButton from '@/components/TodayButton';
 
@@ -48,7 +49,7 @@ const WeekViewDay = ({ day }: WeekViewDayProp) => {
 
   return (
     <div className={`flex items-center justify-around relative h-1/7 p-1 m-1 rounded-md bg-white min-h-7`} onClick={handleWeekDayClick}>
-      <p className={`flex justify-center text-xs w-5/10 py-1 rounded-md capitalize ${isToday(day) ? "today" : "border border-gray-50"}`}>{formatDateForDisplay(day)}</p>
+      <p className={`flex justify-center text-xs w-5/10 py-1 rounded-md capitalize border ${isToday(day) ? "today" : " border-transparent"}`}>{formatDateForDisplay(day)}</p>
       <div className="w-4/10 px-1 flex flex-col items-center">
         {entry.notes && <PencilSquareIcon className="size-4" />}
         {entry.notes &&
@@ -72,8 +73,7 @@ const WeekView = () => {
   const { dayParam } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-  }, [])
+
 
   useEffect(() => {
     // check for date in the url
@@ -92,6 +92,12 @@ const WeekView = () => {
     }
   }, [dayParam])
 
+  const swipeHandlers = useSwipeable({
+    onSwiped: (eventData) => {
+      if (eventData.dir == "Left") goToComingWeek()
+      if (eventData.dir == "Right") goToWeekBefore()
+    },
+  });
   const goToWeekBefore = () => {
     const weekBefore = changeWeek(week, "previous")
     setWeek(weekBefore)
@@ -116,13 +122,13 @@ const WeekView = () => {
 
   return (
     week &&
-    <section id="weekview-section" className="flex flex-col grow relative overflow-hidden">
+    <section id="weekview-section" className="flex flex-col grow relative overflow-hidden" {...swipeHandlers}>
       {!(week.map(date => formatDateForStorage(date)).find(date => date == formatDateForStorage(new Date()))) &&
         <div className=" flex flex-col items-center justify-center absolute top-1 left-1">
           <TodayButton />
         </div>
       }
-      <div className="flex h-1/9 justify-center items-center pt-5">
+      <div className="flex h-1/8 justify-center items-center pt-5">
         <ChevronLeftIcon className="size-8 hover:cursor-pointer" onClick={goToWeekBefore} />
         {week.length && <CurrentWeekLabel week={week} />}
         <ChevronRightIcon className="size-8  hover:cursor-pointer" onClick={goToComingWeek} />

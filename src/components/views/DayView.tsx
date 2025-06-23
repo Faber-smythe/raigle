@@ -3,11 +3,13 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { useOutletContext, useParams, useNavigate } from "react-router"
 import Drop from '@/components/Drop'
 import { PeriodEntry as Entry } from "@/misc/Types"
-import { formatDateForDisplay, formatDateForStorage, isToday, getDateFromStorageFormat } from "@/misc//Utils"
+import { formatDateForDisplay, formatDateForStorage, isToday, getDateFromStorageFormat, getPreviousDay, getNextDay } from "@/misc//Utils"
 import { usePeriodStore } from "@/store/usePeriodStore"
 import TodayButton from "@/components/TodayButton"
+import { useSwipeable } from 'react-swipeable';
 
 const DayView = () => {
+
   const updateEntryStore = useOutletContext() as Function
   const dataEntries = usePeriodStore(state => state.entries);
 
@@ -17,6 +19,13 @@ const DayView = () => {
   const [day, setDay] = useState(new Date())
   const [entry, setEntry] = useState(new Entry(formatDateForStorage(new Date())))
   const updateNoteTimeout = useRef<number | null>(null)
+
+  const swipeHandlers = useSwipeable({
+    onSwiped: (eventData) => {
+      if (eventData.dir == "Left") goToTomorrow()
+      if (eventData.dir == "Right") goToYesterday()
+    },
+  });
 
 
   useEffect(() => {
@@ -54,16 +63,11 @@ const DayView = () => {
   }
 
   const goToYesterday = () => {
-    const newDay = new Date(day.getTime())
-    newDay.setDate(newDay.getDate() - 1)
-    navigate(`/day/${formatDateForStorage(newDay)}`)
+    navigate(`/day/${formatDateForStorage(getPreviousDay(day))}`)
   }
 
   const goToTomorrow = () => {
-    const newDay = new Date(day.getTime())
-    newDay.setDate(newDay.getDate() + 1)
-    navigate(`/day/${formatDateForStorage(newDay)}`)
-
+    navigate(`/day/${formatDateForStorage(getNextDay(day))}`)
   }
 
   // let updateNoteTimeOut: number
@@ -86,7 +90,7 @@ const DayView = () => {
   }
 
   return (
-    <section id="dayview-section" className="flex flex-col grow relative">
+    <section id="dayview-section" className="flex flex-col grow relative" {...swipeHandlers}>
       {/* date navigation */}
       {!isToday(day) &&
         <div className=" flex flex-col items-center justify-center absolute top-1 left-1">

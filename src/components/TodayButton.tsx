@@ -3,10 +3,10 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { formatDateForStorage } from '@/misc/Utils'
 
 interface TodayButtonProps {
-  callBack?: Function
+  handleDoToDay?: Function
 }
 
-const TodayButton = ({ callBack }: TodayButtonProps) => {
+const TodayButton = ({ handleDoToDay }: TodayButtonProps) => {
   const navigate = useNavigate()
   const { dayParam } = useParams();
   const location = useLocation()
@@ -15,7 +15,7 @@ const TodayButton = ({ callBack }: TodayButtonProps) => {
     if (!dayParam) return
     const currentRoute = location.pathname.replace(dayParam, "")
 
-    if (callBack) callBack()
+    if (handleDoToDay) handleDoToDay(new Date())
     navigate(currentRoute + formatDateForStorage(new Date()))
 
   }

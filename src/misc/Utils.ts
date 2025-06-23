@@ -21,9 +21,20 @@ export const isToday = (day: Date): boolean => {
   return checkedString == todayString
 }
 
+export const getNextDay = (day: Date) => {
+  const newDay = new Date(day.getTime())
+  newDay.setDate(newDay.getDate() + 1)
+  return newDay
+}
+
+export const getPreviousDay = (day: Date) => {
+  const newDay = new Date(day.getTime())
+  newDay.setDate(newDay.getDate() - 1)
+  return newDay
+}
+
 export const getWeekfromDay = (day: Date): Date[] => {
   const currentDay = new Date(day.getTime())
-  console.log("currentDay : ", currentDay)
   let week: Date[] = []
   for (let i = 1; i <= 7; i++) {
     const currentDayIndex = currentDay.getDay() == 0 ? 7 : currentDay.getDay() // sunday is index 0 /!\
