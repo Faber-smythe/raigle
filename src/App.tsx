@@ -48,7 +48,7 @@ const App = () => {
   return (
     <>
       {/* loading screen */}
-      {starting && <StartingSplash />}
+      {<StartingSplash />}
 
       {/* navbar on all views once loaded */}
       {!starting &&
