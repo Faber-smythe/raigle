@@ -1,3 +1,7 @@
+
+import is from 'is_js'
+
+
 const dateDisplayOptions: Intl.DateTimeFormatOptions = {
   weekday: "long",
   month: "long",
@@ -9,6 +13,16 @@ const dateStoreOptions: Intl.DateTimeFormatOptions = {
   month: "numeric",
   day: "numeric",
 }
+
+export const isLandscape = () => {
+  if (!window) {
+    console.error("Can't compute device orientation because window is not defined")
+    return
+  }
+  return window.innerWidth > window.innerHeight
+}
+
+export const isDesktop = () => !is.mobile() && !is.tablet()
 
 
 export const isToday = (day: Date): boolean => {

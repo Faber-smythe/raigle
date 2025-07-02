@@ -39,6 +39,14 @@
     @apply min-h-screen relative bg-primary;
   }
 
+  main.is-desktop {
+    @apply bg-transparent;
+  }
+
+  main.is-desktop > section {
+    @apply bg-primary border-1 border-gray-100 rounded-md w-1/2 mx-auto my-5;
+  }
+
   header {
     @apply sm:mt-10 mt-5;
   }
@@ -187,14 +195,10 @@
 .bloody_tile {
   background: rgba(255, 0, 0, 0.3) !important;
 }
-/*
-.react-calendar__month-view__weekdays {
-  justify-content: flex-end;
+
+.tile_has_notes abbr {
+  border-bottom: 1px solid black;
 }
-.react-calendar__month-view__weekdays__weekday {
-  flex-basis: 12.5% !important;
+.tile_has_notes.react-calendar__tile--active abbr{
+  border-color: white !important;
 }
-.react-calendar__month-view__days {
-  width: 87.5%;
-  margin-left: 12.5%;
-} */

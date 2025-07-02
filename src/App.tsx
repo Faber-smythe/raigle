@@ -6,6 +6,7 @@ import { usePeriodStore } from '@/store/usePeriodStore';
 import { PeriodEntry } from './misc/Types';
 
 import { Outlet } from "react-router";
+import { isDesktop } from './misc/Utils';
 
 // import Data from './assets/TestData'
 
@@ -24,7 +25,6 @@ const App = () => {
   useEffect(() => {
     document.title = "Raigle"
     loadFromStorage()
-
     setTimeout(() => {
       setStarting(false)
     }, 1000)
@@ -32,8 +32,8 @@ const App = () => {
 
   const updateEntry = (entry: PeriodEntry): updateEntryResponse => {
     const response = { entry: JSON.parse(JSON.stringify(entry)), status: "" }
-
-    if ((!entry.notes || entry.notes.length == 0) && !entry.blood) {
+    const notesAreempty = (!entry.notes || entry.notes.length == 0 || entry.notes.replace(" ", "") == "")
+    if (notesAreempty && !entry.blood) {
       // remove entry if empty
       removeEntry(entry.date)
       response.status = "removed"
@@ -47,14 +47,12 @@ const App = () => {
 
   return (
     <>
-
-
       {/* loading screen */}
       {starting && <StartingSplash />}
 
       {/* navbar on all views once loaded */}
       {!starting &&
-        <main className="flex flex-col h-screen">
+        <main className={`flex flex-col h-screen ${isDesktop() && "is-desktop"}`}>
           <Navbar />
           <Outlet context={updateEntry} />
         </main>

@@ -21,7 +21,7 @@ const TodayButton = ({ handleDoToDay }: TodayButtonProps) => {
   }
 
   return (
-    <div onClick={handleTodayClick} className="flex items-center justify-center text-xs rounded-md border-2 border-amber-400 px-1">
+    <div onClick={handleTodayClick} className="flex items-center justify-center text-xs rounded-md border-2 border-amber-400 px-1 cursor-pointer">
       <ArrowPathIcon className="size-3" />
       &nbsp;
       Aujourd'hui

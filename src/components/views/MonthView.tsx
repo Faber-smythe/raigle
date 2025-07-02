@@ -5,6 +5,7 @@ import { formatDateForDisplay, formatDateForStorage, getDateFromStorageFormat } 
 import type { TileArgs } from 'react-calendar';
 import { useOutletContext, useParams, useNavigate } from 'react-router';
 import { PeriodEntry as Entry } from '@/misc/Types';
+import { isDesktop } from '@/misc/Utils';
 import { usePeriodStore } from '@/store/usePeriodStore';
 import Drop from '@/components/Drop';
 import TodayButton from '@/components/TodayButton';
@@ -19,7 +20,6 @@ interface WeekViewDayProp {
 const MonthViewDay = ({ day }: WeekViewDayProp) => {
   const updateEntryStore = useOutletContext() as Function
   const dataEntries = usePeriodStore(state => state.entries);
-  // const dataContext = useOutletContext() as Entry[]
   const [entry, setEntry] = useState(new Entry(formatDateForStorage(new Date(day.getTime()))))
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const MonthViewDay = ({ day }: WeekViewDayProp) => {
         <Drop handleBloodUpdate={handleBloodUpdate} className="size-10 p-1 sm:p-.5 absolute top-1 right-1 rounded-full border  border-pink-300" blood={entry.blood} />
         {formatDateForDisplay(day)}
       </p>
-      <p className="whitespace-pre-wrap text-xs text-ellipsis overflow-scroll p-1 pr-10">
+      <p className={`whitespace-pre-wrap text-xs text-ellipsis p-1 pr-10 ${(!isDesktop() || entry.notes )&& 'overflow-y-scroll'}`}>
         {entry.notes}
       </p>
     </div>
@@ -105,9 +105,9 @@ const MonthView = () => {
 
   const handleTileContent = (tile: TileArgs) => {
     const entry = dataEntries.find(entry => entry.date == formatDateForStorage(tile.date))
-    if (entry && entry.blood) {
+    if (entry) {
       return (
-        <span className="block absolute left-0 bottom-0 w-full h-2" style={{ backgroundColor: `${entry.blood}` }}></span>
+        <span className="block absolute left-0 bottom-0 w-full h-2" style={{ backgroundColor: `${entry.blood ?? "auto"}` }}></span>
       )
     }
   }
@@ -121,6 +121,8 @@ const MonthView = () => {
     const entry = dataEntries.find(entry => entry.date == formatDateForStorage(tile.date))
     if (entry && entry.blood) {
       className += " bloody_tile"
+    } if (entry && entry.notes) {
+      className += " tile_has_notes"
     }
     return className
   }

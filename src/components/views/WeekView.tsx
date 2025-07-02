@@ -6,6 +6,7 @@ import { PencilSquareIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/
 import { useOutletContext, useNavigate, useParams } from 'react-router';
 import { usePeriodStore } from '@/store/usePeriodStore';
 import { useSwipeable } from 'react-swipeable';
+import { isDesktop } from '@/misc/Utils';
 import Drop from '@/components/Drop';
 import TodayButton from '@/components/TodayButton';
 
@@ -133,7 +134,7 @@ const WeekView = () => {
         {week.length && <CurrentWeekLabel week={week} />}
         <ChevronRightIcon className="size-8  hover:cursor-pointer" onClick={goToComingWeek} />
       </div>
-      <div className="flex flex-col h-8/9 overflow-scroll">
+      <div className={`flex flex-col h-8/9  ${!isDesktop() && 'overflow-scroll'}`}>
         {week.map(day =>
           <WeekViewDay key={day.toLocaleString("FR-fr", { weekday: "long" })} day={day} />
         )}

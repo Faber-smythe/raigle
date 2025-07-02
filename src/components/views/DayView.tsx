@@ -75,9 +75,6 @@ const DayView = () => {
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (updateNoteTimeout.current) clearTimeout(updateNoteTimeout.current)
     const udpatedValue = e.target.value
-
-    console.log(udpatedValue)
-
     const newEntry = {
       ...entry,
       notes: udpatedValue
